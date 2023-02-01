@@ -1,0 +1,28 @@
+version: '3.7'
+
+services:
+# docker run --name postgres \
+# -e POSTGRES_PASSWORD=teste -e PGDATA=/var/lib/postgresql/data/pgdata \
+# -v postgres:/var/lib/postgresql/data/pgdata postgres
+  postgres:
+    image: postgres
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: teste
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - ./postgres:/var/lib/postgresql/data/pgdata
+    ports:
+      - 5432:5432
+# docker run --name pgadmin -p 8080:80 \
+# -e PGADMIN_DEFAULT_EMAIL=dssouzadan@gmail.com -e PGADMIN_DEFAULT_PASSWORD=teste dpage/pgadmin4
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: always
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=dssouzadan@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=teste
+    ports:
+      - 8080:80

@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+  conversao-temperatura:
+    build: ./conversao-temperatura/
+    ports:
+      - "8080:8080"
+  conversao-distancia:
+    build: ./conversao-distancia/
+    ports:
+      - "8081:5000"
+  conversao-peso:
+    build: ./conversao-peso/
+    ports:
+      - "8082:80"

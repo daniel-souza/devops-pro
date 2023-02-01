@@ -1,0 +1,19 @@
+# Use root/example as user/password credentials
+version: '3.7'
+
+services:
+  mariadb:
+    image: mariadb
+    restart: always
+    environment:
+      - MARIADB_ROOT_PASSWORD=teste
+    volumes:
+      - ./mariadb:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    environment:
+      - PMA_HOST=mariadb
+    ports:
+      - 8080:80

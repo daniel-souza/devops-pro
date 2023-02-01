@@ -1,0 +1,100 @@
+version: '3.7'
+services:
+  postgres:
+    image: postgres
+    volumes:
+      - ./db/postgres:/var/lib/postgresql/data
+    environment:
+      # - POSTGRES_DB=kubedevnews não está funcionando - default é pg (nome do usuário)
+      - POSTGRES_USER=pg
+      - POSTGRES_PASSWORD=pg123
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres-network
+
+  kube-news:
+    build: 
+      context: ./kube-news/
+      dockerfile: Dockerfile
+      args:
+        - DB_USERNAME=pg
+        - DB_PASSWORD=pg123
+        - DB_HOST=postgres
+        - DB_DATABASE=pg
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - postgres-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: always
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=dssouzadan@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=teste
+    ports:
+      - 8090:80
+    depends_on:
+      - postgres
+    networks:
+      - postgres-network
+  
+  mongo:
+    image: mongo:4.2
+    container_name: mongo_container
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin_mongo
+      - MONGO_INITDB_DATABASE=data
+      - MONGO_INITDB_ROOT_PASSWORD=pass_mongo
+    ports:
+      - '27017:27017'
+    volumes: 
+      - ./mongodb:/data/
+    networks:
+      - mongo-network
+
+  rotten-potatoes:
+    build: 
+      context: ./rotten-potatoes/
+      dockerfile: Dockerfile
+      args:
+        - MONGODB_USERNAME=admin_mongo
+        - MONGODB_PASSWORD=pass_mongo
+        - MONGODB_HOST=mongo
+        - MONGO_INITDB_DATABASE=data
+    ports:
+      - "8081:5000"
+    depends_on:
+      - mongo
+    networks:
+      - mongo-network
+      
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express_container
+    restart: always
+    depends_on:
+      - mongo
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongo
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin_mongo
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=pass_mongo
+      - ME_CONFIG_BASICAUTH_USERNAME=admin_web
+      - ME_CONFIG_BASICAUTH_PASSWORD=pass_web
+    ports:
+      - '8091:8081'
+    networks:
+      - mongo-network
+
+networks:
+  mongo-network:
+    driver: bridge
+  postgres-network:
+    driver: bridge
+
+    
