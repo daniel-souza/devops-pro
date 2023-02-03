@@ -24,9 +24,9 @@ ENV MONGODB_PORT=$MONGODB_PORT
 ENV MONGODB_USERNAME=$MONGODB_USERNAME
 ENV MONGODB_PASSWORD=$MONGODB_PASSWORD
 
-# RUN python3 config.py
-
 RUN export FLASK_APP=app.py
 EXPOSE 5000
-# CMD [ "python3", "app.py", "run", "-h", "0.0.0.0" ]
-CMD [ "flask", "run", "--host=0.0.0.0"]
+
+CMD ["sh", "-c",  "python3 -c \
+            'from config import on_starting; on_starting(None)'\
+            && flask run --host=0.0.0.0"]

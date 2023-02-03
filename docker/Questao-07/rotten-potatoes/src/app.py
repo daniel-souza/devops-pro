@@ -10,8 +10,6 @@ from prometheus_flask_exporter import PrometheusMetrics
 from middleware import set_unhealth, set_unready_for_seconds, middleware
 from datetime import datetime
 
-from config import on_starting
-
 app = Flask(__name__,
             static_url_path='', 
             static_folder='static',
@@ -26,9 +24,7 @@ app.config['MONGODB_DB'] = os.getenv("MONGODB_DB", "admin")
 app.config['MONGODB_HOST'] = os.getenv("MONGODB_HOST", "localhost")
 app.config['MONGODB_PORT'] = int(os.getenv("MONGODB_PORT", "27017"))
 app.config['MONGODB_USERNAME'] = os.getenv("MONGODB_USERNAME", "mongouser")
-app.config['MONGODB_PASSWORD'] = os.getenv("MONGODB_PASSWORD", "mongopwd")
-
-on_starting()
+app.config['MONGODB_PASSWORD'] = os.getenv("MONGODB_PASSWORD", "mongopwd") 
 
 db.init_app(app)  
 

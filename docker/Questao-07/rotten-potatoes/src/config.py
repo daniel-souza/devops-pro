@@ -12,13 +12,15 @@ MONGODB_PORT = int(os.getenv("MONGODB_PORT", "27017"))
 MONGODB_USERNAME = os.getenv("MONGODB_USERNAME", "mongouser")
 MONGODB_PASSWORD = os.getenv("MONGODB_PASSWORD", "mongopwd") 
 
-def on_starting():    
-    print("Conectando ao MongoDB")
+def hello():
+    print("command 1")
+
+def on_starting(server):    
+    print("Iniciando o servidor")
+
     CONNECTION_STRING = "mongodb://" + MONGODB_USERNAME + ":" + MONGODB_PASSWORD + "@" + MONGODB_HOST 
 
     client = MongoClient(CONNECTION_STRING)
-    
-    print(client.server_info()) # force connection on a request as the
 
     db = client[MONGODB_DB]
     collection = db["filme"]
@@ -26,6 +28,7 @@ def on_starting():
     if not collection.find().count() > 0:
         with open('movies.yaml') as arquivo:
             documento = yaml.full_load(arquivo)
+
             for item, doc in documento.items():       
                 for item_filme in doc:
 
@@ -51,5 +54,4 @@ def on_starting():
                     
                     collection.insert_one(filme)
                     
-            arquivo.close()
-            
+            arquivo.close() 
